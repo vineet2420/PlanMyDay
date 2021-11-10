@@ -1,6 +1,6 @@
 # Final Project Idea
 
-Plan My Day is a responsive calendar for spontaneous individuals who also have a structured approach to their daily agenda. The application will ask the user for a variety of their interests and events. A tentative list is as follows – 
+Plan My Day is a responsive calendar for spontaneous individuals who also have a structured approach to their daily agendas. The application will ask the user for a variety of their interests and events. A tentative list is as follows – 
 
 1.	Restaurant preference – fast-food vs. dine-in
 2.	Cuisine type – Italian, Chinese (select multiple)
