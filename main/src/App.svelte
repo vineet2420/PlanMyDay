@@ -1,13 +1,7 @@
 <script>
 	import Router from "svelte-spa-router";
+	import { routes } from "./routes";
 
-	import Root from "./LandingPage.svelte";
-	import CalendarViewer from "./ViewPlanner.svelte";
-
-	let routes = {
-		"/": Root,
-		"/Plan": CalendarViewer,
-	};
 </script>
 
 <Router { routes } />

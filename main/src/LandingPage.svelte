@@ -3,14 +3,14 @@
 </script>
 
 <main>
-	<div id="tes">
+	<div id="mainContent">
 		<h1>Let's Get Started!</h1>
 		<button on:click={() => push("/Plan")}>Plan My Day</button>
 	</div>
 </main>
 
 <style>
-	#tes {
+	#mainContent {
 		margin: 0;
 		position: absolute;
 		top: 50%;
