@@ -8,34 +8,29 @@
 	import Fa from "svelte-fa";
 	import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
-	var currentDate = new Date(),
-		dateformat =
-			[currentDate.getMonth() + 1, currentDate.getDate(), currentDate.getFullYear()].join("/") +
-			" " +
-			[currentDate.getHours(), currentDate.getMinutes(), currentDate.getSeconds()].join(":");
-	let events = [
-		{
-			title: "New Event",
-			start: currentDate,
-			allDay: false,
-		},
-	];
+	import { allEvents } from "./eventManager";
+
+	console.log("In calendar view: " + allEvents.length);
 
 	let options = {
 		// slotMinTime: "06:00:00",
 		headerToolbar: {
 			left: "prev,next today",
 			center: "title",
-			right: "timeGridWeek,timeGridDay",
+			right: "timeGridWeek, timeGridDay",
 		},
 		initialView: "timeGridWeek",
 		plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
 		weekends: true,
-		height: 650,
+		height: 700,
 		dayMaxEvents: true,
-		events: events,
+		events: allEvents,
 		editable: true,
 		droppable: true,
+		eventDrop: function (info) {
+			console.log(info);
+			console.log(info.event.id);
+		},
 	};
 
 	function toggleWeekends() {
