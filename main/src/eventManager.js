@@ -25,6 +25,15 @@ function addEvent(event) {
     allEvents = allEvents;
 }
 
+function updateEventDrag(id, startTime, allDay){
+    const indexToUpdate = allEvents.findIndex((iterator => iterator.id == id));
+
+    allEvents[indexToUpdate].start = startTime;
+    allEvents[indexToUpdate].allDay = allDay;
+
+    allEvents = allEvents;
+}
+
 function genericRemoveEvent(id, eventList) {
     const localListIndex = eventList
         .map(function (iterator) {
@@ -35,7 +44,7 @@ function genericRemoveEvent(id, eventList) {
     allEvents = allEvents;
 }
 
-export { addEvent, genericRemoveEvent };
+export { addEvent, genericRemoveEvent, updateEventDrag };
 /*
 let events = [
     {

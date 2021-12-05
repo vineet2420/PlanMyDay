@@ -17,7 +17,7 @@
     function displayNewEvent() {
         localEvents = localEvents.concat([
             {
-                id: String(count),
+                id: String((Math.random() * Date.now()).toFixed()),
                 title: "",
                 start: "",
                 allDay: false,
@@ -97,6 +97,7 @@
                         id="saveEventButton"
                         on:click={() => {
                             addEvent({
+                                id: localEvent.id,
                                 title: localEvent.title,
                                 start: localEvent.start,
                                 allDay: localEvent.allDay,
@@ -160,7 +161,7 @@
     }
 
     #dateInput {
-        width: 250px;
+        width: 260px;
     }
 
     #secondRow {

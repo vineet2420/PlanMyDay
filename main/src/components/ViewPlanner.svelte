@@ -8,7 +8,9 @@
 	import Fa from "svelte-fa";
 	import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
-	import { allEvents } from "../eventManager";
+	import { allEvents, updateEventDrag } from "../eventManager";
+
+	import moment from 'moment';
 
 	console.log("In calendar view: " + allEvents.length);
 
@@ -29,14 +31,12 @@
 		droppable: true,
 		eventDrop: function (info) {
 			console.log(info);
-			console.log(info.event.id);
+			console.log(info.event.allDay);
+			var startTimeConverted = moment(info.event.start).format("YYYY-MM-DDTkk:mm");
+			updateEventDrag(info.event.id, startTimeConverted, info.event.allDay);
 		},
 	};
 
-	function toggleWeekends() {
-		options.weekends = !options.weekends;
-		options = { ...options };
-	}
 </script>
 
 <main>
