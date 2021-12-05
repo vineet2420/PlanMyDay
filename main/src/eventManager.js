@@ -4,8 +4,6 @@ var currentDate = new Date(),
         " " +
         [currentDate.getHours(), currentDate.getMinutes(), currentDate.getSeconds()].join(":");
 
-        
-
 export var allEvents = [
     {
         id: "added id",
@@ -15,17 +13,29 @@ export var allEvents = [
     },
 ]
 
+function addEvent(event) {
+    const indexToUpdate = allEvents.findIndex((iterator => iterator.id == event.id));
 
-function addEvent(event) {  
-    console.log(currentDate);
-
-    $: allEvents.push(event);
-
-    console.log("Size: " + allEvents.length + " actually has value? " + allEvents[1].title);
-
+    if (indexToUpdate != -1) {
+        allEvents[indexToUpdate] = event;
+    }
+    else {
+        allEvents.push(event);
+    }
+    allEvents = allEvents;
 }
 
-export {addEvent};
+function genericRemoveEvent(id, eventList) {
+    const localListIndex = eventList
+        .map(function (iterator) {
+            return iterator.id;
+        })
+        .indexOf(id);
+    eventList.splice(localListIndex, 1);
+    allEvents = allEvents;
+}
+
+export { addEvent, genericRemoveEvent };
 /*
 let events = [
     {

@@ -1,5 +1,7 @@
 <script>
-    import { addEvent } from "../eventManager";
+    import { fade, scale } from "svelte/transition";
+
+    import { allEvents, addEvent, genericRemoveEvent } from "../eventManager";
 
     import { push, pop, loc } from "svelte-spa-router";
 
@@ -10,16 +12,27 @@
         faPlus,
     } from "@fortawesome/free-solid-svg-icons";
 
-    var localEvents = [];
-
+    var localEvents = [...allEvents];
+    var count = 0;
     function displayNewEvent() {
         localEvents = localEvents.concat([
             {
+                id: String(count),
                 title: "",
                 start: "",
                 allDay: false,
             },
         ]);
+        count = count + 1;
+    }
+
+    function removeLocalEvent(id) {
+        genericRemoveEvent(id, localEvents);
+
+        // An event can be added locally but not saved to the global list
+        // Check if value exists in global list as well and delete
+        genericRemoveEvent(id, allEvents);
+        localEvents = localEvents;
     }
 </script>
 
@@ -40,11 +53,6 @@
         id="next"
         on:click={() => {
             push("/Plan");
-            addEvent({
-                title: "New Event",
-                start: "2021-12-04T14:30:00",
-                allDay: false,
-            });
         }}
     >
         <Fa icon={faArrowRight} /> Finish
@@ -53,8 +61,8 @@
 
 <main>
     <div class="grid-container">
-
         {#each localEvents as localEvent}
+            <!--  transition:scale -->
             <div id="eventFields">
                 <input
                     bind:value={localEvent.title}
@@ -69,16 +77,35 @@
                         placeholder="Date"
                         on:click={() => console.log("clicked")}
                     />
+                    <div id="checkbox">
+                        <input
+                            bind:checked={localEvent.allDay}
+                            type="checkbox"
+                            name="alldayCheckbox"
+                        />
+                        <label for="alldayCheckbox">All-Day</label>
+                    </div>
+                </div>
+                <div id="thirdRow">
                     <button
                         id="deleteEventButton"
                         on:click={() => {
-                            console.log(dateInputText);
+                            removeLocalEvent(localEvent.id);
                         }}>Delete</button
+                    >
+                    <button
+                        id="saveEventButton"
+                        on:click={() => {
+                            addEvent({
+                                title: localEvent.title,
+                                start: localEvent.start,
+                                allDay: localEvent.allDay,
+                            });
+                        }}>Save</button
                     >
                 </div>
             </div>
         {/each}
-        
     </div>
 </main>
 
@@ -124,6 +151,10 @@
         margin-bottom: 20px;
     }
 
+    #eventFields button {
+        width: 100px;
+    }
+
     #eventNameInput {
         width: 400px;
     }
@@ -135,6 +166,19 @@
     #secondRow {
         display: flex;
         justify-content: space-between;
+    }
+
+    #thirdRow {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    #checkbox {
+        display: flex;
+    }
+
+    #checkbox label {
+        padding-left: 10px;
     }
 
     .grid-container {

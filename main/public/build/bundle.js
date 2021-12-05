@@ -1,9 +1,10 @@
 
-(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
+(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':35730/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var app = (function () {
     'use strict';
 
     function noop() { }
+    const identity$1 = x => x;
     function assign(tar, src) {
         // @ts-ignore
         for (const k in src)
@@ -1720,12 +1721,41 @@ var app = (function () {
     	}
     }
 
+    function cubicOut(t) {
+        const f = t - 1.0;
+        return f * f * f + 1.0;
+    }
+
+    function fade(node, { delay = 0, duration = 400, easing = identity$1 } = {}) {
+        const o = +getComputedStyle(node).opacity;
+        return {
+            delay,
+            duration,
+            easing,
+            css: t => `opacity: ${t * o}`
+        };
+    }
+    function scale(node, { delay = 0, duration = 400, easing = cubicOut, start = 0, opacity = 0 } = {}) {
+        const style = getComputedStyle(node);
+        const target_opacity = +style.opacity;
+        const transform = style.transform === 'none' ? '' : style.transform;
+        const sd = 1 - start;
+        const od = target_opacity * (1 - opacity);
+        return {
+            delay,
+            duration,
+            easing,
+            css: (_t, u) => `
+			transform: ${transform} scale(${1 - (sd * u)});
+			opacity: ${target_opacity - (od * u)}
+		`
+        };
+    }
+
     var currentDate = new Date();
         [currentDate.getMonth() + 1, currentDate.getDate(), currentDate.getFullYear()].join("/") +
             " " +
             [currentDate.getHours(), currentDate.getMinutes(), currentDate.getSeconds()].join(":");
-
-            
 
     var allEvents = [
         {
@@ -1736,14 +1766,26 @@ var app = (function () {
         },
     ];
 
+    function addEvent$1(event) {
+        const indexToUpdate = allEvents.findIndex((iterator => iterator.id == event.id));
 
-    function addEvent$1(event) {  
-        console.log(currentDate);
+        if (indexToUpdate != -1) {
+            allEvents[indexToUpdate] = event;
+        }
+        else {
+            allEvents.push(event);
+        }
+        allEvents = allEvents;
+    }
 
-        allEvents.push(event);
-
-        console.log("Size: " + allEvents.length + " actually has value? " + allEvents[1].title);
-
+    function genericRemoveEvent(id, eventList) {
+        const localListIndex = eventList
+            .map(function (iterator) {
+                return iterator.id;
+            })
+            .indexOf(id);
+        eventList.splice(localListIndex, 1);
+        allEvents = allEvents;
     }
     /*
     let events = [
@@ -2565,80 +2607,137 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[9] = list[i];
-    	child_ctx[10] = list;
-    	child_ctx[11] = i;
+    	child_ctx[13] = list[i];
+    	child_ctx[14] = list;
+    	child_ctx[15] = i;
     	return child_ctx;
     }
 
-    // (57:8) {#each localEvents as localEvent}
+    // (64:8) {#each localEvents as localEvent}
     function create_each_block(ctx) {
-    	let div1;
+    	let div3;
     	let input0;
     	let t0;
-    	let div0;
+    	let div1;
     	let input1;
     	let t1;
-    	let button;
-    	let t3;
+    	let div0;
+    	let input2;
+    	let t2;
+    	let label;
+    	let t4;
+    	let div2;
+    	let button0;
+    	let t6;
+    	let button1;
+    	let t8;
     	let mounted;
     	let dispose;
 
     	function input0_input_handler() {
-    		/*input0_input_handler*/ ctx[5].call(input0, /*each_value*/ ctx[10], /*localEvent_index*/ ctx[11]);
+    		/*input0_input_handler*/ ctx[6].call(input0, /*each_value*/ ctx[14], /*localEvent_index*/ ctx[15]);
     	}
 
     	function input1_input_handler() {
-    		/*input1_input_handler*/ ctx[6].call(input1, /*each_value*/ ctx[10], /*localEvent_index*/ ctx[11]);
+    		/*input1_input_handler*/ ctx[7].call(input1, /*each_value*/ ctx[14], /*localEvent_index*/ ctx[15]);
+    	}
+
+    	function input2_change_handler() {
+    		/*input2_change_handler*/ ctx[9].call(input2, /*each_value*/ ctx[14], /*localEvent_index*/ ctx[15]);
+    	}
+
+    	function click_handler_4() {
+    		return /*click_handler_4*/ ctx[10](/*localEvent*/ ctx[13]);
+    	}
+
+    	function click_handler_5() {
+    		return /*click_handler_5*/ ctx[11](/*localEvent*/ ctx[13]);
     	}
 
     	const block = {
     		c: function create() {
-    			div1 = element("div");
+    			div3 = element("div");
     			input0 = element("input");
     			t0 = space();
-    			div0 = element("div");
+    			div1 = element("div");
     			input1 = element("input");
     			t1 = space();
-    			button = element("button");
-    			button.textContent = "Delete";
-    			t3 = space();
+    			div0 = element("div");
+    			input2 = element("input");
+    			t2 = space();
+    			label = element("label");
+    			label.textContent = "All-Day";
+    			t4 = space();
+    			div2 = element("div");
+    			button0 = element("button");
+    			button0.textContent = "Delete";
+    			t6 = space();
+    			button1 = element("button");
+    			button1.textContent = "Save";
+    			t8 = space();
     			attr_dev(input0, "id", "eventNameInput");
     			attr_dev(input0, "placeholder", "Event Name");
-    			attr_dev(input0, "class", "svelte-cxtwin");
-    			add_location(input0, file$2, 58, 16, 1355);
+    			attr_dev(input0, "class", "svelte-1xo1bk9");
+    			add_location(input0, file$2, 66, 16, 1726);
     			attr_dev(input1, "type", "datetime-local");
     			attr_dev(input1, "id", "dateInput");
     			attr_dev(input1, "placeholder", "Date");
-    			attr_dev(input1, "class", "svelte-cxtwin");
-    			add_location(input1, file$2, 64, 20, 1573);
-    			attr_dev(button, "id", "deleteEventButton");
-    			add_location(button, file$2, 71, 20, 1869);
-    			attr_dev(div0, "id", "secondRow");
-    			attr_dev(div0, "class", "svelte-cxtwin");
-    			add_location(div0, file$2, 63, 16, 1532);
-    			attr_dev(div1, "id", "eventFields");
-    			attr_dev(div1, "class", "svelte-cxtwin");
-    			add_location(div1, file$2, 57, 12, 1316);
+    			attr_dev(input1, "class", "svelte-1xo1bk9");
+    			add_location(input1, file$2, 72, 20, 1944);
+    			attr_dev(input2, "type", "checkbox");
+    			attr_dev(input2, "name", "alldayCheckbox");
+    			add_location(input2, file$2, 80, 24, 2284);
+    			attr_dev(label, "for", "alldayCheckbox");
+    			attr_dev(label, "class", "svelte-1xo1bk9");
+    			add_location(label, file$2, 85, 24, 2497);
+    			attr_dev(div0, "id", "checkbox");
+    			attr_dev(div0, "class", "svelte-1xo1bk9");
+    			add_location(div0, file$2, 79, 20, 2240);
+    			attr_dev(div1, "id", "secondRow");
+    			attr_dev(div1, "class", "svelte-1xo1bk9");
+    			add_location(div1, file$2, 71, 16, 1903);
+    			attr_dev(button0, "id", "deleteEventButton");
+    			attr_dev(button0, "class", "svelte-1xo1bk9");
+    			add_location(button0, file$2, 89, 20, 2647);
+    			attr_dev(button1, "id", "saveEventButton");
+    			attr_dev(button1, "class", "svelte-1xo1bk9");
+    			add_location(button1, file$2, 95, 20, 2889);
+    			attr_dev(div2, "id", "thirdRow");
+    			attr_dev(div2, "class", "svelte-1xo1bk9");
+    			add_location(div2, file$2, 88, 16, 2607);
+    			attr_dev(div3, "id", "eventFields");
+    			attr_dev(div3, "class", "svelte-1xo1bk9");
+    			add_location(div3, file$2, 65, 12, 1687);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div1, anchor);
-    			append_dev(div1, input0);
-    			set_input_value(input0, /*localEvent*/ ctx[9].title);
-    			append_dev(div1, t0);
+    			insert_dev(target, div3, anchor);
+    			append_dev(div3, input0);
+    			set_input_value(input0, /*localEvent*/ ctx[13].title);
+    			append_dev(div3, t0);
+    			append_dev(div3, div1);
+    			append_dev(div1, input1);
+    			set_input_value(input1, /*localEvent*/ ctx[13].start);
+    			append_dev(div1, t1);
     			append_dev(div1, div0);
-    			append_dev(div0, input1);
-    			set_input_value(input1, /*localEvent*/ ctx[9].start);
-    			append_dev(div0, t1);
-    			append_dev(div0, button);
-    			append_dev(div1, t3);
+    			append_dev(div0, input2);
+    			input2.checked = /*localEvent*/ ctx[13].allDay;
+    			append_dev(div0, t2);
+    			append_dev(div0, label);
+    			append_dev(div3, t4);
+    			append_dev(div3, div2);
+    			append_dev(div2, button0);
+    			append_dev(div2, t6);
+    			append_dev(div2, button1);
+    			append_dev(div3, t8);
 
     			if (!mounted) {
     				dispose = [
     					listen_dev(input0, "input", input0_input_handler),
     					listen_dev(input1, "input", input1_input_handler),
-    					listen_dev(input1, "click", /*click_handler_3*/ ctx[7], false, false, false),
-    					listen_dev(button, "click", /*click_handler_4*/ ctx[8], false, false, false)
+    					listen_dev(input1, "click", /*click_handler_3*/ ctx[8], false, false, false),
+    					listen_dev(input2, "change", input2_change_handler),
+    					listen_dev(button0, "click", click_handler_4, false, false, false),
+    					listen_dev(button1, "click", click_handler_5, false, false, false)
     				];
 
     				mounted = true;
@@ -2647,16 +2746,20 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
 
-    			if (dirty & /*localEvents*/ 1 && input0.value !== /*localEvent*/ ctx[9].title) {
-    				set_input_value(input0, /*localEvent*/ ctx[9].title);
+    			if (dirty & /*localEvents*/ 1 && input0.value !== /*localEvent*/ ctx[13].title) {
+    				set_input_value(input0, /*localEvent*/ ctx[13].title);
     			}
 
     			if (dirty & /*localEvents*/ 1) {
-    				set_input_value(input1, /*localEvent*/ ctx[9].start);
+    				set_input_value(input1, /*localEvent*/ ctx[13].start);
+    			}
+
+    			if (dirty & /*localEvents*/ 1) {
+    				input2.checked = /*localEvent*/ ctx[13].allDay;
     			}
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div1);
+    			if (detaching) detach_dev(div3);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -2666,7 +2769,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(57:8) {#each localEvents as localEvent}",
+    		source: "(64:8) {#each localEvents as localEvent}",
     		ctx
     	});
 
@@ -2745,27 +2848,27 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			add_location(h1, file$2, 27, 24, 588);
+    			add_location(h1, file$2, 40, 24, 1073);
     			attr_dev(div0, "id", "child");
-    			attr_dev(div0, "class", "svelte-cxtwin");
-    			add_location(div0, file$2, 27, 8, 572);
-    			add_location(button0, file$2, 29, 12, 669);
+    			attr_dev(div0, "class", "svelte-1xo1bk9");
+    			add_location(div0, file$2, 40, 8, 1057);
+    			add_location(button0, file$2, 42, 12, 1154);
     			attr_dev(div1, "id", "child-addEventButton");
-    			attr_dev(div1, "class", "svelte-cxtwin");
-    			add_location(div1, file$2, 28, 8, 625);
-    			attr_dev(div2, "class", "parent svelte-cxtwin");
-    			add_location(div2, file$2, 26, 4, 543);
+    			attr_dev(div1, "class", "svelte-1xo1bk9");
+    			add_location(div1, file$2, 41, 8, 1110);
+    			attr_dev(div2, "class", "parent svelte-1xo1bk9");
+    			add_location(div2, file$2, 39, 4, 1028);
     			attr_dev(button1, "id", "back");
-    			attr_dev(button1, "class", "svelte-cxtwin");
-    			add_location(button1, file$2, 35, 4, 807);
+    			attr_dev(button1, "class", "svelte-1xo1bk9");
+    			add_location(button1, file$2, 48, 4, 1292);
     			attr_dev(button2, "id", "next");
-    			add_location(button2, file$2, 38, 4, 909);
-    			attr_dev(div3, "class", "topContent svelte-cxtwin");
-    			add_location(div3, file$2, 25, 0, 514);
-    			attr_dev(div4, "class", "grid-container svelte-cxtwin");
-    			add_location(div4, file$2, 54, 4, 1232);
-    			attr_dev(main, "class", "svelte-cxtwin");
-    			add_location(main, file$2, 53, 0, 1221);
+    			add_location(button2, file$2, 51, 4, 1394);
+    			attr_dev(div3, "class", "topContent svelte-1xo1bk9");
+    			add_location(div3, file$2, 38, 0, 999);
+    			attr_dev(div4, "class", "grid-container svelte-1xo1bk9");
+    			add_location(div4, file$2, 62, 4, 1565);
+    			attr_dev(main, "class", "svelte-1xo1bk9");
+    			add_location(main, file$2, 61, 0, 1554);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2800,16 +2903,16 @@ var app = (function () {
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(button0, "click", /*click_handler*/ ctx[2], false, false, false),
-    					listen_dev(button1, "click", /*click_handler_1*/ ctx[3], false, false, false),
-    					listen_dev(button2, "click", /*click_handler_2*/ ctx[4], false, false, false)
+    					listen_dev(button0, "click", /*click_handler*/ ctx[3], false, false, false),
+    					listen_dev(button1, "click", /*click_handler_1*/ ctx[4], false, false, false),
+    					listen_dev(button2, "click", /*click_handler_2*/ ctx[5], false, false, false)
     				];
 
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*console, dateInputText, localEvents*/ 1) {
+    			if (dirty & /*addEvent, localEvents, removeLocalEvent, console*/ 5) {
     				each_value = /*localEvents*/ ctx[0];
     				validate_each_argument(each_value);
     				let i;
@@ -2873,10 +2976,30 @@ var app = (function () {
     function instance$3($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('AddEvents', slots, []);
-    	var localEvents = [];
+    	var localEvents = [...allEvents];
+    	var count = 0;
 
     	function displayNewEvent() {
-    		$$invalidate(0, localEvents = localEvents.concat([{ title: "", start: "", allDay: false }]));
+    		$$invalidate(0, localEvents = localEvents.concat([
+    			{
+    				id: String(count),
+    				title: "",
+    				start: "",
+    				allDay: false
+    			}
+    		]));
+
+    		count = count + 1;
+    	}
+
+    	function removeLocalEvent(id) {
+    		genericRemoveEvent(id, localEvents);
+
+    		// An event can be added locally but not saved to the global list
+    		// Check if value exists in global list as well and delete
+    		genericRemoveEvent(id, allEvents);
+
+    		$$invalidate(0, localEvents);
     	}
 
     	const writable_props = [];
@@ -2890,12 +3013,6 @@ var app = (function () {
 
     	const click_handler_2 = () => {
     		push("/Plan");
-
-    		addEvent$1({
-    			title: "New Event",
-    			start: "2021-12-04T14:30:00",
-    			allDay: false
-    		});
     	};
 
     	function input0_input_handler(each_value, localEvent_index) {
@@ -2910,12 +3027,29 @@ var app = (function () {
 
     	const click_handler_3 = () => console.log("clicked");
 
-    	const click_handler_4 = () => {
-    		console.log(dateInputText);
+    	function input2_change_handler(each_value, localEvent_index) {
+    		each_value[localEvent_index].allDay = this.checked;
+    		$$invalidate(0, localEvents);
+    	}
+
+    	const click_handler_4 = localEvent => {
+    		removeLocalEvent(localEvent.id);
+    	};
+
+    	const click_handler_5 = localEvent => {
+    		addEvent$1({
+    			title: localEvent.title,
+    			start: localEvent.start,
+    			allDay: localEvent.allDay
+    		});
     	};
 
     	$$self.$capture_state = () => ({
+    		fade,
+    		scale,
+    		allEvents,
     		addEvent: addEvent$1,
+    		genericRemoveEvent,
     		push,
     		pop,
     		loc,
@@ -2924,11 +3058,14 @@ var app = (function () {
     		faArrowRight,
     		faPlus,
     		localEvents,
-    		displayNewEvent
+    		count,
+    		displayNewEvent,
+    		removeLocalEvent
     	});
 
     	$$self.$inject_state = $$props => {
     		if ('localEvents' in $$props) $$invalidate(0, localEvents = $$props.localEvents);
+    		if ('count' in $$props) count = $$props.count;
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -2938,13 +3075,16 @@ var app = (function () {
     	return [
     		localEvents,
     		displayNewEvent,
+    		removeLocalEvent,
     		click_handler,
     		click_handler_1,
     		click_handler_2,
     		input0_input_handler,
     		input1_input_handler,
     		click_handler_3,
-    		click_handler_4
+    		input2_change_handler,
+    		click_handler_4,
+    		click_handler_5
     	];
     }
 
