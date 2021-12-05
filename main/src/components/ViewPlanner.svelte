@@ -1,5 +1,5 @@
 <script>
-	import { push, replace, location } from "svelte-spa-router";
+	import { push, pop } from "svelte-spa-router";
 	import FullCalendar from "svelte-fullcalendar";
 	import dayGridPlugin from "@fullcalendar/daygrid";
 	import timeGridPlugin from "@fullcalendar/timegrid";
@@ -8,7 +8,7 @@
 	import Fa from "svelte-fa";
 	import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
-	import { allEvents } from "./eventManager";
+	import { allEvents } from "../eventManager";
 
 	console.log("In calendar view: " + allEvents.length);
 
@@ -41,7 +41,7 @@
 
 <main>
 	<h1>View My Plan</h1>
-	<button id="back" on:click={() => push("/")}>
+	<button id="back" on:click={() => pop()}>
 		<Fa icon={faArrowLeft} /> Go Back
 	</button>
 </main>
