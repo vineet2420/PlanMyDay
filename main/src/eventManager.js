@@ -1,10 +1,12 @@
+import {foodEvents} from './foodSelectionManager';
+
 var currentDate = new Date(),
     dateformat =
         [currentDate.getMonth() + 1, currentDate.getDate(), currentDate.getFullYear()].join("/") +
         " " +
         [currentDate.getHours(), currentDate.getMinutes(), currentDate.getSeconds()].join(":");
 
-export var allEvents = [
+export var allUserEvents = [
     {
         id: "added id",
         title: "First Event",
@@ -13,25 +15,33 @@ export var allEvents = [
     },
 ]
 
+export var combinedFoodAndUserEvents = allUserEvents.concat(foodEvents);
+
+function combineFoodAndUserEvents(){
+    combinedFoodAndUserEvents = allUserEvents.concat(foodEvents);
+    // combinedFoodAndUserEvents.sort(compare);
+    combinedFoodAndUserEvents = combinedFoodAndUserEvents;
+}
+
 function addEvent(event) {
-    const indexToUpdate = allEvents.findIndex((iterator => iterator.id == event.id));
+    const indexToUpdate = allUserEvents.findIndex((iterator => iterator.id == event.id));
 
     if (indexToUpdate != -1) {
-        allEvents[indexToUpdate] = event;
+        allUserEvents[indexToUpdate] = event;
     }
     else {
-        allEvents.push(event);
+        allUserEvents.push(event);
     }
-    allEvents = allEvents;
+    allUserEvents = allUserEvents;
 }
 
 function updateEventDrag(id, startTime, allDay){
-    const indexToUpdate = allEvents.findIndex((iterator => iterator.id == id));
+    const indexToUpdate = allUserEvents.findIndex((iterator => iterator.id == id));
 
-    allEvents[indexToUpdate].start = startTime;
-    allEvents[indexToUpdate].allDay = allDay;
+    allUserEvents[indexToUpdate].start = startTime;
+    allUserEvents[indexToUpdate].allDay = allDay;
 
-    allEvents = allEvents;
+    allUserEvents = allUserEvents;
 }
 
 function genericRemoveEvent(id, eventList) {
@@ -41,16 +51,17 @@ function genericRemoveEvent(id, eventList) {
         })
         .indexOf(id);
     eventList.splice(localListIndex, 1);
-    allEvents = allEvents;
+    allUserEvents = allUserEvents;
 }
 
-export { addEvent, genericRemoveEvent, updateEventDrag };
-/*
-let events = [
-    {
-        title: "New Event",
-        start: currentDate,
-        allDay: false,
-    },
-];
-*/
+function compare(a, b) {
+    if ( a.start < b.start){
+      return -1;
+    }
+    if ( a.start > b.start){
+      return 1;
+    }
+    return 0;
+  }
+
+export { addEvent, genericRemoveEvent, updateEventDrag, combineFoodAndUserEvents };

@@ -1,7 +1,7 @@
 <script>
     import { fade, scale } from "svelte/transition";
 
-    import { allEvents, addEvent, genericRemoveEvent } from "../eventManager";
+    import { allUserEvents, addEvent, genericRemoveEvent, combineFoodAndUserEvents } from "../eventManager";
 
     import { push, pop, loc } from "svelte-spa-router";
 
@@ -12,7 +12,7 @@
         faPlus,
     } from "@fortawesome/free-solid-svg-icons";
 
-    var localEvents = [...allEvents];
+    var localEvents = [...allUserEvents];
     var count = 0;
     function displayNewEvent() {
         localEvents = localEvents.concat([
@@ -31,14 +31,14 @@
 
         // An event can be added locally but not saved to the global list
         // Check if value exists in global list as well and delete
-        genericRemoveEvent(id, allEvents);
+        genericRemoveEvent(id, allUserEvents);
         localEvents = localEvents;
     }
 </script>
 
 <div class="topContent">
     <div class="parent">
-        <div id="child"><h1>Add an Event!</h1></div>
+        <div id="child"><h1>Add an Event</h1></div>
         <div id="child-addEventButton">
             <button on:click={() => displayNewEvent()}>
                 <Fa icon={faPlus} /> Add
@@ -52,6 +52,7 @@
     <button
         id="next"
         on:click={() => {
+            combineFoodAndUserEvents();
             push("/Plan");
         }}
     >

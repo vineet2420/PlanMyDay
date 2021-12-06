@@ -8,14 +8,14 @@
 	import Fa from "svelte-fa";
 	import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
-	import { allEvents, updateEventDrag } from "../eventManager";
+	import { combinedFoodAndUserEvents, updateEventDrag } from "../eventManager";
 
 	import moment from 'moment';
 
-	console.log("In calendar view: " + allEvents.length);
+	console.log("In calendar view: " + combinedFoodAndUserEvents);
 
 	let options = {
-		// slotMinTime: "06:00:00",
+		// slotMinTime: combinedFoodAndUserEvents[0].start,
 		headerToolbar: {
 			left: "prev,next today",
 			center: "title",
@@ -26,9 +26,10 @@
 		weekends: true,
 		height: 700,
 		dayMaxEvents: true,
-		events: allEvents,
+		events: combinedFoodAndUserEvents,
 		editable: true,
 		droppable: true,
+		eventMinHeight: 100,
 		eventDrop: function (info) {
 			console.log(info);
 			console.log(info.event.allDay);

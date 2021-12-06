@@ -7,7 +7,7 @@
 		<h1>Let's Get Started!</h1>
 		<button
 			on:click={() => {
-				push("/NewEvent");
+				push("/FoodPrefs");
 			}}>Plan My Day</button>
 	</div>
 </main>
