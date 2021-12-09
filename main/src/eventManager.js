@@ -1,19 +1,6 @@
 import {foodEvents} from './foodSelectionManager';
 
-var currentDate = new Date(),
-    dateformat =
-        [currentDate.getMonth() + 1, currentDate.getDate(), currentDate.getFullYear()].join("/") +
-        " " +
-        [currentDate.getHours(), currentDate.getMinutes(), currentDate.getSeconds()].join(":");
-
-export var allUserEvents = [
-    {
-        id: "added id",
-        title: "First Event",
-        start: currentDate,
-        allDay: false,
-    },
-]
+export var allUserEvents = [];
 
 export var combinedFoodAndUserEvents = allUserEvents.concat(foodEvents);
 
@@ -54,14 +41,5 @@ function genericRemoveEvent(id, eventList) {
     allUserEvents = allUserEvents;
 }
 
-function compare(a, b) {
-    if ( a.start < b.start){
-      return -1;
-    }
-    if ( a.start > b.start){
-      return 1;
-    }
-    return 0;
-  }
 
 export { addEvent, genericRemoveEvent, updateEventDrag, combineFoodAndUserEvents };

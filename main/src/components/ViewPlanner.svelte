@@ -29,7 +29,7 @@
 		events: combinedFoodAndUserEvents,
 		editable: true,
 		droppable: true,
-		eventMinHeight: 100,
+		eventMinHeight: 80,
 		eventDrop: function (info) {
 			console.log(info);
 			console.log(info.event.allDay);

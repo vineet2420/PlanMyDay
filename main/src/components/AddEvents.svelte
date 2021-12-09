@@ -1,7 +1,12 @@
 <script>
     import { fade, scale } from "svelte/transition";
 
-    import { allUserEvents, addEvent, genericRemoveEvent, combineFoodAndUserEvents } from "../eventManager";
+    import {
+        allUserEvents,
+        addEvent,
+        genericRemoveEvent,
+        combineFoodAndUserEvents,
+    } from "../eventManager";
 
     import { push, pop, loc } from "svelte-spa-router";
 
@@ -21,6 +26,11 @@
                 title: "",
                 start: "",
                 allDay: false,
+                color:
+                    "#" +
+                    ((Math.random() * 0xffffff) << 0)
+                        .toString(16)
+                        .padStart(6, "0"),
             },
         ]);
         count = count + 1;
@@ -34,6 +44,21 @@
         genericRemoveEvent(id, allUserEvents);
         localEvents = localEvents;
     }
+
+    import { makeRequest, mutableZipCode, categoryValue } from "../foodSelectionManager";  
+
+    let zipCode = "";
+    let category = "";
+
+	mutableZipCode.subscribe(value => {
+		zipCode = value;
+	});
+
+	categoryValue.subscribe(value => {
+		category = value;
+	});
+
+    makeRequest(zipCode, category);
 </script>
 
 <div class="topContent">
