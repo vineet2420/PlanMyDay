@@ -1,5 +1,3 @@
-import { onMount } from "svelte";
-
 export var foodEvents = [];
 
 import { writable } from "svelte/store";
@@ -7,45 +5,77 @@ import { writable } from "svelte/store";
 export const mutableZipCode = writable("");
 export const categoryValue = writable("");
 
-function makeRequest(zipCode, categories) {
-    foodEvents = [];
-    onMount(async () => {
-        
-        fetch("https://protected-chamber-65305.herokuapp.com/https://api.yelp.com/v3/businesses/search?location="+zipCode+"&categories="+categories, {
-            method: 'GET',
-            // mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': 'Bearer ' + 'LU9SO-KeJAim6Ea1DcNgt_Ea98kqWYMPWcSwZ_A4mk0D1LERJ67ZoDne9ELihbd9E_hepJeJzvYDKcMmrQEp9CHU-5WXEJch8zSDmK54C5zjAfwmWI4-NzWxVc2CYXYx',
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                // console.log(data.businesses);
+async function makeRequest(zipCode, category) {
+    console.log("Made Request")
+    return fetch("https://protected-chamber-65305.herokuapp.com/https://api.yelp.com/v3/businesses/search?location=" + zipCode + "&categories=" + category, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Bearer ' + 'LU9SO-KeJAim6Ea1DcNgt_Ea98kqWYMPWcSwZ_A4mk0D1LERJ67ZoDne9ELihbd9E_hepJeJzvYDKcMmrQEp9CHU-5WXEJch8zSDmK54C5zjAfwmWI4-NzWxVc2CYXYx',
+        }
+    }).then(response => response.json())
+        .then(data => {
+            // console.log(data.businesses);
+            foodEvents = [];
+            const d = new Date();
+            var dateStart = d.getDate() - d.getDay();
 
-                const d = new Date();
-                var dateStart = d.getDate() - d.getDay();
-
-                for (var i in data.businesses) {
-                    if (i < 7) {
-                // console.log(dateStart<10?"0"+dateStart:dateStart);
-                        foodEvents.push({
-                            id: String((Math.random() * Date.now()).toFixed()),
-                            title: data.businesses[i].name + " - " + data.businesses[i].location.display_address.toString(),
-                            start: "2021-12-"+(dateStart<10?("0"+dateStart):dateStart)+"T12:30:00",
-                            allDay: false,
-                            color: '#'+(Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')
-                        })
-                        dateStart += 1;
-                        console.log("I: " + i + ", Name: " + data.businesses[i].name + ", Address: " + data.businesses[i].location.display_address.toString());
-                    }
+            for (var i in data.businesses) {
+                if (i < 7) {
+                    // console.log(dateStart<10?"0"+dateStart:dateStart);
+                    foodEvents.push({
+                        id: 'F'+String((Math.random() * Date.now()).toFixed()),
+                        title: data.businesses[i].name + " - " + data.businesses[i].location.display_address.toString(),
+                        start: "2021-12-" + (dateStart < 10 ? ("0" + dateStart) : dateStart) + "T12:30:00",
+                        allDay: false,
+                        color: '#' + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')
+                    })
+                    // foodEvents = foodEvents;
+                    dateStart += 1;
+                    console.log("I: " + i + ", Name: " + data.businesses[i].name + ", Address: " + data.businesses[i].location.display_address.toString());
                 }
+            }
+            return foodEvents;
 
-            }).catch(error => {
-                console.log(error);
-            });
-    });
+        }).catch(error => {
+            console.log(error);
+        });
 }
+
+export function addFoodEvent(event) {
+    const indexToUpdate = foodEvents.findIndex((iterator => iterator.id == event.id));
+
+    console.log(event);
+    console.log(indexToUpdate);
+    if (indexToUpdate != -1) {
+        foodEvents[indexToUpdate] = event;
+    }
+    else {
+        foodEvents.push(event);
+    }
+    foodEvents = foodEvents;
+}
+
+export function removeFoodEvent(id, foodList) {
+    const localListIndex = foodList
+        .map(function (iterator) {
+            return iterator.id;
+        })
+        .indexOf(id);
+    foodList.splice(localListIndex, 1);
+    foodEvents = foodEvents;
+}
+
+export function updateFoodEventDrag(id, startTime, allDay){
+    const indexToUpdate = foodEvents.findIndex((iterator => iterator.id == id));
+
+    foodEvents[indexToUpdate].start = startTime;
+    foodEvents[indexToUpdate].allDay = allDay;
+
+    foodEvents = foodEvents;
+}
+
+export const resetFoodList = () => foodEvents = [];
 
 export var allFoodOptions = writable([
     { value: "newamerican, tradamerican, All", label: "American" },
@@ -86,7 +116,7 @@ export var allFoodOptions = writable([
     { value: "thai, All", label: "Thai" },
     { value: "vegan, All", label: "Vegan" },
     { value: "vegetarian, All", label: "Vegetarian" },
-    { value: "vietnamese, All", label: "Vietnamese" }    
+    { value: "vietnamese, All", label: "Vietnamese" }
 ]);
 
-export {makeRequest}
+export { makeRequest }

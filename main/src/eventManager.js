@@ -6,7 +6,6 @@ export var combinedFoodAndUserEvents = allUserEvents.concat(foodEvents);
 
 function combineFoodAndUserEvents(){
     combinedFoodAndUserEvents = allUserEvents.concat(foodEvents);
-    // combinedFoodAndUserEvents.sort(compare);
     combinedFoodAndUserEvents = combinedFoodAndUserEvents;
 }
 

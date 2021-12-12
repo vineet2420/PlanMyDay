@@ -18,6 +18,7 @@
     } from "@fortawesome/free-solid-svg-icons";
 
     var localEvents = [...allUserEvents];
+
     var count = 0;
     function displayNewEvent() {
         localEvents = localEvents.concat([
@@ -45,20 +46,55 @@
         localEvents = localEvents;
     }
 
-    import { makeRequest, mutableZipCode, categoryValue } from "../foodSelectionManager";  
+    import {
+        makeRequest,
+        mutableZipCode,
+        categoryValue,
+        foodEvents,
+        addFoodEvent,
+        removeFoodEvent,
+    } from "../foodSelectionManager";
 
     let zipCode = "";
     let category = "";
 
-	mutableZipCode.subscribe(value => {
-		zipCode = value;
-	});
+    mutableZipCode.subscribe((value) => {
+        zipCode = value;
+    });
 
-	categoryValue.subscribe(value => {
-		category = value;
-	});
+    categoryValue.subscribe((value) => {
+        category = value;
+    });
 
-    makeRequest(zipCode, category);
+    // makeRequest(zipCode, category);
+
+    var localFoodEvents = [
+        ...foodEvents
+    ];
+
+    function removeLocalFoodEvent(id) {
+        removeFoodEvent(id, localFoodEvents);
+
+        // An event can be added locally but not saved to the global list
+        // Check if value exists in global list as well and delete
+        removeFoodEvent(id, foodEvents);
+        localFoodEvents = localFoodEvents;
+    }
+
+    // Only make the request if coming from food preferences page, making an additional
+    // request after coming from calendar will reset object ids and no need
+    let promise = () => {};
+    if (foodEvents.length === 0) {
+        promise = makeRequest(zipCode, category);
+    }
+    /*
+{id: String((Math.random() * Date.now()).toFixed()),
+                        title: 'Test',
+                        start: "2021-12-12T12:30:00",
+                        allDay: false,}
+    */
+
+    console.log(localFoodEvents);
 </script>
 
 <div class="topContent">
@@ -86,6 +122,9 @@
 </div>
 
 <main>
+    {#if localEvents.length > 0}
+        <h2>My Events</h2>
+    {/if}
     <div class="grid-container">
         {#each localEvents as localEvent}
             <!--  transition:scale -->
@@ -122,18 +161,86 @@
                     <button
                         id="saveEventButton"
                         on:click={() => {
-                            addEvent({
-                                id: localEvent.id,
-                                title: localEvent.title,
-                                start: localEvent.start,
-                                allDay: localEvent.allDay,
-                            });
+                            addEvent(
+                                {
+                                    id: localEvent.id,
+                                    title: localEvent.title,
+                                    start: localEvent.start,
+                                    allDay: localEvent.allDay,
+                                },
+                                localEvents
+                            );
                         }}>Save</button
                     >
                 </div>
             </div>
         {/each}
     </div>
+    {#await promise}
+        <p>Loading restaurants...</p>
+    {:then foodEvents}
+        <h2>Restaurant Events</h2>
+        <div class="grid-container">
+            {#each localFoodEvents.length > 0 ? localFoodEvents : foodEvents===undefined?[]:foodEvents as foodEvent}
+                <!--  transition:scale -->
+                <div id="eventFields">
+                    <input
+                        bind:value={foodEvent.title}
+                        id="eventNameInput"
+                        placeholder="Event Name"
+                    />
+                    <div id="secondRow">
+                        <input
+                            bind:value={foodEvent.start}
+                            type="datetime-local"
+                            id="dateInput"
+                            placeholder="Date"
+                            on:click={() => console.log("clicked")}
+                        />
+                        <div id="checkbox">
+                            <input
+                                bind:checked={foodEvent.allDay}
+                                type="checkbox"
+                                name="alldayCheckbox"
+                            />
+                            <label for="alldayCheckbox">All-Day</label>
+                        </div>
+                    </div>
+                    <div id="thirdRow">
+                        <button
+                            id="deleteEventButton"
+                            on:click={() => {
+                                removeLocalFoodEvent(foodEvent.id);
+                                console.log(
+                                    "delete food event: " +
+                                        foodEvent.id +
+                                        " : " +
+                                        foodEvent.title
+                                );
+                            }}>Delete</button
+                        >
+                        <button
+                            id="saveEventButton"
+                            on:click={() => {
+                                addFoodEvent(
+                                    {
+                                        id: foodEvent.id,
+                                        title: foodEvent.title,
+                                        start: foodEvent.start,
+                                        allDay: foodEvent.allDay,
+                                    },
+                                    localEvents
+                                );
+                                console.log("save food event");
+                            }}>Save</button
+                        >
+                    </div>
+                </div>
+            {/each}
+        </div>
+    {:catch error}
+        <p>Error: {error}</p>
+    {/await}
 </main>
 
 <style>

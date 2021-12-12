@@ -13,6 +13,7 @@
         mutableZipCode,
         categoryValue,
         allFoodOptions,
+        resetFoodList
     } from "../foodSelectionManager";
 
     var items = [{ value: "", label: "" }];
@@ -29,7 +30,7 @@
 
     categoryValue.subscribe((value) => {
         if (!(value == null)) {
-            cuisineSelection = items.find(element => element.value == value);
+            cuisineSelection = items.find((element) => element.value == value);
         }
     });
 
@@ -51,6 +52,7 @@
     <button
         id="next"
         on:click={() => {
+            var foodEvents = []
             console.log(inputZipCode);
             if (inputZipCode === "") {
                 alert("Please add a zip code.");
@@ -59,6 +61,7 @@
             } else {
                 mutableZipCode.set(inputZipCode);
                 categoryValue.set(cuisineSelection.value);
+                resetFoodList();
                 push("/NewEvent");
             }
         }}
@@ -84,7 +87,7 @@
                 placeholder="Cuisine Type"
                 id="cuisineSelector"
                 {items}
-                bind:value = {cuisineSelection}
+                bind:value={cuisineSelection}
                 on:select={handleSelect}
                 on:clear={handleClear}
             />

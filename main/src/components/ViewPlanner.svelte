@@ -8,9 +8,14 @@
 	import Fa from "svelte-fa";
 	import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
-	import { combinedFoodAndUserEvents, updateEventDrag } from "../eventManager";
+	import {
+		combinedFoodAndUserEvents,
+		updateEventDrag,
+	} from "../eventManager";
 
-	import moment from 'moment';
+	import { updateFoodEventDrag } from "../foodSelectionManager";
+
+	import moment from "moment";
 
 	console.log("In calendar view: " + combinedFoodAndUserEvents);
 
@@ -31,13 +36,27 @@
 		droppable: true,
 		eventMinHeight: 80,
 		eventDrop: function (info) {
-			console.log(info);
-			console.log(info.event.allDay);
-			var startTimeConverted = moment(info.event.start).format("YYYY-MM-DDTkk:mm");
-			updateEventDrag(info.event.id, startTimeConverted, info.event.allDay);
+			console.log(info.event.id.charAt(0));
+			// console.log(info.event.allDay);
+			var startTimeConverted = moment(info.event.start).format(
+				"YYYY-MM-DDTkk:mm"
+			);
+
+			if (info.event.id.charAt(0) === "F") {
+				updateFoodEventDrag(
+					info.event.id,
+					startTimeConverted,
+					info.event.allDay
+				);
+			} else {
+				updateEventDrag(
+					info.event.id,
+					startTimeConverted,
+					info.event.allDay
+				);
+			}
 		},
 	};
-
 </script>
 
 <main>
