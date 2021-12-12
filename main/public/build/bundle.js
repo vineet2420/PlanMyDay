@@ -2143,13 +2143,16 @@ var app = (function () {
                 foodEvents = [];
                 const d = new Date();
                 var dateStart = d.getDate() - d.getDay();
+                var month = ('0' + (d.getMonth() + 1)).slice(-2);
+                var year = d.getFullYear();
+                console.log(year);
 
                 for (var i in data.businesses) {
                     if (i < 7) {
                         foodEvents.push({
-                            id: 'F'+String((Math.random() * Date.now()).toFixed()),
+                            id: 'F' + String((Math.random() * Date.now()).toFixed()),
                             title: data.businesses[i].name + " - " + data.businesses[i].location.display_address.toString(),
-                            start: "2021-12-" + (dateStart < 10 ? ("0" + dateStart) : dateStart) + "T12:30:00",
+                            start: year + "-" + month + "-" + (dateStart < 10 ? ("0" + dateStart) : dateStart) + (i%2==0?"T12:00:00":"T12:30:00"),
                             allDay: false,
                             color: '#' + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')
                         });
@@ -2174,7 +2177,7 @@ var app = (function () {
         foodEvents = foodEvents;
     }
 
-    function updateFoodEventDrag(id, startTime, allDay){
+    function updateFoodEventDrag(id, startTime, allDay) {
         const indexToUpdate = foodEvents.findIndex((iterator => iterator.id == id));
 
         foodEvents[indexToUpdate].start = startTime;
