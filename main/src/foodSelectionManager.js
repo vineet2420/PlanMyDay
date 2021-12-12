@@ -6,7 +6,6 @@ export const mutableZipCode = writable("");
 export const categoryValue = writable("");
 
 async function makeRequest(zipCode, category) {
-    console.log("Made Request")
     return fetch("https://protected-chamber-65305.herokuapp.com/https://api.yelp.com/v3/businesses/search?location=" + zipCode + "&categories=" + category, {
         method: 'GET',
         headers: {
@@ -15,14 +14,12 @@ async function makeRequest(zipCode, category) {
         }
     }).then(response => response.json())
         .then(data => {
-            // console.log(data.businesses);
             foodEvents = [];
             const d = new Date();
             var dateStart = d.getDate() - d.getDay();
 
             for (var i in data.businesses) {
                 if (i < 7) {
-                    // console.log(dateStart<10?"0"+dateStart:dateStart);
                     foodEvents.push({
                         id: 'F'+String((Math.random() * Date.now()).toFixed()),
                         title: data.businesses[i].name + " - " + data.businesses[i].location.display_address.toString(),
@@ -30,9 +27,7 @@ async function makeRequest(zipCode, category) {
                         allDay: false,
                         color: '#' + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')
                     })
-                    // foodEvents = foodEvents;
                     dateStart += 1;
-                    console.log("I: " + i + ", Name: " + data.businesses[i].name + ", Address: " + data.businesses[i].location.display_address.toString());
                 }
             }
             return foodEvents;
@@ -44,15 +39,21 @@ async function makeRequest(zipCode, category) {
 
 export function addFoodEvent(event) {
     const indexToUpdate = foodEvents.findIndex((iterator => iterator.id == event.id));
-
-    console.log(event);
-    console.log(indexToUpdate);
     if (indexToUpdate != -1) {
         foodEvents[indexToUpdate] = event;
     }
     else {
         foodEvents.push(event);
     }
+    foodEvents = foodEvents;
+}
+
+export function updateFoodEventDrag(id, startTime, allDay){
+    const indexToUpdate = foodEvents.findIndex((iterator => iterator.id == id));
+
+    foodEvents[indexToUpdate].start = startTime;
+    foodEvents[indexToUpdate].allDay = allDay;
+
     foodEvents = foodEvents;
 }
 
@@ -66,14 +67,6 @@ export function removeFoodEvent(id, foodList) {
     foodEvents = foodEvents;
 }
 
-export function updateFoodEventDrag(id, startTime, allDay){
-    const indexToUpdate = foodEvents.findIndex((iterator => iterator.id == id));
-
-    foodEvents[indexToUpdate].start = startTime;
-    foodEvents[indexToUpdate].allDay = allDay;
-
-    foodEvents = foodEvents;
-}
 
 export const resetFoodList = () => foodEvents = [];
 

@@ -3,8 +3,8 @@
 
     import {
         allUserEvents,
-        addEvent,
-        genericRemoveEvent,
+        addUserEvent,
+        removeUserEvent,
         combineFoodAndUserEvents,
     } from "../eventManager";
 
@@ -38,11 +38,11 @@
     }
 
     function removeLocalEvent(id) {
-        genericRemoveEvent(id, localEvents);
+        removeUserEvent(id, localEvents);
 
         // An event can be added locally but not saved to the global list
         // Check if value exists in global list as well and delete
-        genericRemoveEvent(id, allUserEvents);
+        removeUserEvent(id, allUserEvents);
         localEvents = localEvents;
     }
 
@@ -66,11 +66,7 @@
         category = value;
     });
 
-    // makeRequest(zipCode, category);
-
-    var localFoodEvents = [
-        ...foodEvents
-    ];
+    var localFoodEvents = [...foodEvents];
 
     function removeLocalFoodEvent(id) {
         removeFoodEvent(id, localFoodEvents);
@@ -87,14 +83,6 @@
     if (foodEvents.length === 0) {
         promise = makeRequest(zipCode, category);
     }
-    /*
-{id: String((Math.random() * Date.now()).toFixed()),
-                        title: 'Test',
-                        start: "2021-12-12T12:30:00",
-                        allDay: false,}
-    */
-
-    console.log(localFoodEvents);
 </script>
 
 <div class="topContent">
@@ -140,7 +128,6 @@
                         type="datetime-local"
                         id="dateInput"
                         placeholder="Date"
-                        on:click={() => console.log("clicked")}
                     />
                     <div id="checkbox">
                         <input
@@ -161,12 +148,13 @@
                     <button
                         id="saveEventButton"
                         on:click={() => {
-                            addEvent(
+                            addUserEvent(
                                 {
                                     id: localEvent.id,
                                     title: localEvent.title,
                                     start: localEvent.start,
                                     allDay: localEvent.allDay,
+                                    color: localEvent.color,
                                 },
                                 localEvents
                             );
@@ -181,7 +169,7 @@
     {:then foodEvents}
         <h2>Restaurant Events</h2>
         <div class="grid-container">
-            {#each localFoodEvents.length > 0 ? localFoodEvents : foodEvents===undefined?[]:foodEvents as foodEvent}
+            {#each localFoodEvents.length > 0 ? localFoodEvents : foodEvents === undefined ? [] : foodEvents as foodEvent}
                 <!--  transition:scale -->
                 <div id="eventFields">
                     <input
@@ -195,7 +183,6 @@
                             type="datetime-local"
                             id="dateInput"
                             placeholder="Date"
-                            on:click={() => console.log("clicked")}
                         />
                         <div id="checkbox">
                             <input
@@ -211,12 +198,6 @@
                             id="deleteEventButton"
                             on:click={() => {
                                 removeLocalFoodEvent(foodEvent.id);
-                                console.log(
-                                    "delete food event: " +
-                                        foodEvent.id +
-                                        " : " +
-                                        foodEvent.title
-                                );
                             }}>Delete</button
                         >
                         <button
@@ -231,7 +212,6 @@
                                     },
                                     localEvents
                                 );
-                                console.log("save food event");
                             }}>Save</button
                         >
                     </div>

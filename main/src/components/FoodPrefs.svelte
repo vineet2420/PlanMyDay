@@ -52,8 +52,7 @@
     <button
         id="next"
         on:click={() => {
-            var foodEvents = []
-            console.log(inputZipCode);
+            var foodEvents = [];
             if (inputZipCode === "") {
                 alert("Please add a zip code.");
             } else if (cuisineSelection === undefined) {

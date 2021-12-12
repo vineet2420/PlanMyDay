@@ -9,7 +9,7 @@ function combineFoodAndUserEvents(){
     combinedFoodAndUserEvents = combinedFoodAndUserEvents;
 }
 
-function addEvent(event) {
+function addUserEvent(event) {
     const indexToUpdate = allUserEvents.findIndex((iterator => iterator.id == event.id));
 
     if (indexToUpdate != -1) {
@@ -21,7 +21,7 @@ function addEvent(event) {
     allUserEvents = allUserEvents;
 }
 
-function updateEventDrag(id, startTime, allDay){
+function updateUserEventDrag(id, startTime, allDay){
     const indexToUpdate = allUserEvents.findIndex((iterator => iterator.id == id));
 
     allUserEvents[indexToUpdate].start = startTime;
@@ -30,7 +30,7 @@ function updateEventDrag(id, startTime, allDay){
     allUserEvents = allUserEvents;
 }
 
-function genericRemoveEvent(id, eventList) {
+function removeUserEvent(id, eventList) {
     const localListIndex = eventList
         .map(function (iterator) {
             return iterator.id;
@@ -41,4 +41,4 @@ function genericRemoveEvent(id, eventList) {
 }
 
 
-export { addEvent, genericRemoveEvent, updateEventDrag, combineFoodAndUserEvents };
+export { addUserEvent, removeUserEvent, updateUserEventDrag, combineFoodAndUserEvents };

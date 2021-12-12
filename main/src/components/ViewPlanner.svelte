@@ -10,14 +10,12 @@
 
 	import {
 		combinedFoodAndUserEvents,
-		updateEventDrag,
+		updateUserEventDrag,
 	} from "../eventManager";
 
 	import { updateFoodEventDrag } from "../foodSelectionManager";
 
 	import moment from "moment";
-
-	console.log("In calendar view: " + combinedFoodAndUserEvents);
 
 	let options = {
 		// slotMinTime: combinedFoodAndUserEvents[0].start,
@@ -36,8 +34,6 @@
 		droppable: true,
 		eventMinHeight: 80,
 		eventDrop: function (info) {
-			console.log(info.event.id.charAt(0));
-			// console.log(info.event.allDay);
 			var startTimeConverted = moment(info.event.start).format(
 				"YYYY-MM-DDTkk:mm"
 			);
@@ -49,7 +45,7 @@
 					info.event.allDay
 				);
 			} else {
-				updateEventDrag(
+				updateUserEventDrag(
 					info.event.id,
 					startTimeConverted,
 					info.event.allDay
