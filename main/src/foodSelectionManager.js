@@ -10,7 +10,7 @@ async function makeRequest(zipCode, category) {
         method: 'GET',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Bearer ' + 'LU9SO-KeJAim6Ea1DcNgt_Ea98kqWYMPWcSwZ_A4mk0D1LERJ67ZoDne9ELihbd9E_hepJeJzvYDKcMmrQEp9CHU-5WXEJch8zSDmK54C5zjAfwmWI4-NzWxVc2CYXYx',
+            'Authorization': 'Bearer ' + 'YOUR_API_KEY',
         }
     }).then(response => response.json())
         .then(data => {
@@ -107,6 +107,7 @@ export var allFoodOptions = writable([
     { value: "pizza, All", label: "Pizza" },
     { value: "portuguese", label: "Portuguese" },
     { value: "russian, All", label: "Russian" },
+    { value: "spanish, All", label: "Spanish"},
     { value: "sushi, All", label: "Sushi Bars" },
     { value: "swedish", label: "Swedish" },
     { value: "thai, All", label: "Thai" },

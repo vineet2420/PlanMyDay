@@ -15,12 +15,13 @@
         allFoodOptions,
         resetFoodList
     } from "../foodSelectionManager";
+import { debug } from "svelte/internal";
 
     var items = [{ value: "", label: "" }];
     allFoodOptions.subscribe((value) => {
         items = value;
     });
-
+console.log(items.length)
     var inputZipCode = "";
     var cuisineSelection = undefined;
 
