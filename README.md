@@ -9,6 +9,8 @@
   <p align="center">
     A responsive calendar for spontaneous individuals who also <br />have a structured approach to their daily agendas.
     </p>
+    
+<a href="https://fast-agenda.herokuapp.com/">Live Demo - https://fast-agenda.herokuapp.com/</a>
 </div>
 
 
