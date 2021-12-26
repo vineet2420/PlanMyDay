@@ -29,6 +29,7 @@
 	* [JavaScript - Language used within Svelte](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 * [Yelp Fusion API - For fetching restaurants](https://fusion.yelp.com/)
 * [Heroku - PaaS for Hosting CORS Redirect](https://www.heroku.com)
+* [svelte-fullcalendar - wrapper of JavaScript FullCalendar](https://github.com/YogliB/svelte-fullcalendar)
 
 <details open>
 <summary>Hide Images</summary>
