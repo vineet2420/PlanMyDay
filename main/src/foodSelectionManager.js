@@ -10,7 +10,7 @@ async function makeRequest(zipCode, category) {
         method: 'GET',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Bearer ' + 'YOUR_API_KEY',
+            'Authorization': 'Bearer ' + '',
         }
     }).then(response => response.json())
         .then(data => {
